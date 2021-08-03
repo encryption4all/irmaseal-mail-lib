@@ -3,13 +3,14 @@ import {ComposeMail, ReadMail} from "./../dist/index";
 console.log("\n\n====== composeMail.ts examples ======")
 
 const CT: string = "ABCDEF"
-const ATTACHMENT: string = "ATTACHMENT"
-const FILENAME: string = "ATTACHMENT"
-const NONCE: string = "ATTACHMENT"
+const ATTACHMENT: string = "ATTACHMENTCONTENT"
+const FILENAME: string = "ATTACHMENT.TXT"
+const NONCE = new Uint8Array([49,50,51,52,53,54,55,56,49,49,50,51,53,54,49,50])
 const VERSION: string = "Version 1"
 const enc = new TextEncoder()
+const dec = new TextDecoder()
 
-let composeMail = new ComposeMail()
+const composeMail = new ComposeMail()
 
 composeMail.setSender("daniel.ostkamp@ru.nl")
 composeMail.addRecipient("irmasealtest@gmail.com")
@@ -20,21 +21,20 @@ composeMail.addAttachment(enc.encode(ATTACHMENT), FILENAME, NONCE)
 
 console.log("Composed mime mail: \n", composeMail.getMimeMail())
 
-let readMail = new ReadMail()
+const readMail = new ReadMail()
 
 readMail.parseMail(composeMail.getMimeMail())
 
 console.log("Readmail version: ", readMail.getVersion())
 
-const ctBytes = new TextDecoder().decode(readMail.getCiphertext())
+const ctBytes = dec.decode(readMail.getCiphertext())
 console.log("Readmail ct: ", ctBytes)
 
 const attachment = readMail.getAttachments()[0]
-const attachmentBytes = new TextDecoder().decode(attachment.body)
+const attachmentBytes = dec.decode(attachment.body)
 console.log("Readmail attachment: ", attachmentBytes)
 
 console.assert(CT.localeCompare(ctBytes)===0)
 console.assert(VERSION.localeCompare(readMail.getVersion())===0)
 console.assert(ATTACHMENT.localeCompare(attachmentBytes)===0)
 console.assert(FILENAME.localeCompare(attachment.fileName)===0)
-console.assert(NONCE.localeCompare(attachment.nonce)===0)

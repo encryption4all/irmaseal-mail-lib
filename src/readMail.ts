@@ -86,23 +86,24 @@ export class ReadMail implements IReadIrmaSealMail {
         let attachmentsBegin = false
         sections.forEach((section) => {
             if (attachmentsBegin) {
-                const attachmentBody = new Uint8Array(Buffer.from(section
+                let attachmentBody = new Uint8Array(Buffer.from(section
                     .match(regExp)[0]
                     .replace(regExp, "$1")
                     .replace(/(?:\r\n|\r|\n| )/g, ""), "base64"))
 
-                const fileName = section.match(/filename=(.*)/gm)[0]
+                const nonce = attachmentBody.slice(0,16)
+                attachmentBody = attachmentBody.slice(16)
+
+                const fileName = section.match(/filename=(.*);?/gm)[0]
                     .replace("filename=", "")
+                    .replace(".enc", "")
+                    .replace(/;.*/, "")
                     .replace(/"/g, "")
 
-                const nonce = section.match(/Nonce: (.*)/gm)[0]
-                    .replace("Nonce: ", "")
-                    .replace(/"/g, "")
-
-                const attachment: IAttachment = { body: attachmentBody, fileName:fileName, nonce:nonce}
+                const attachment: IAttachment = { body: attachmentBody, fileName:fileName, nonce: nonce}
                 this.attachments.push(attachment)
             }
-            // attachments always come after body part
+            // attachments always come after mail message body part
             else if (section == ctPart) {
                 attachmentsBegin = true
             }

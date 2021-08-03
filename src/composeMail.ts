@@ -5,7 +5,7 @@ interface IComposeIrmaSealMail {
     setSender(sender: string)
     setSubject(subject: string): void
     setCiphertext(ct: Uint8Array): void
-    addAttachment(ct: Uint8Array, fileName: string, nonce: string): void
+    addAttachment(ct: Uint8Array, fileName: string, nonce: Uint8Array): void
     getMimeMail(): string
     getMimeHeader(): string
     getMimeBody(): string
@@ -50,7 +50,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
         this.sender = sender
     }
 
-    addAttachment(ct: Uint8Array, fileName: string, nonce: string) {
+    addAttachment(ct: Uint8Array, fileName: string, nonce: Uint8Array) {
         const attachment: IAttachment = { body: ct, fileName:fileName, nonce:nonce}
         this.attachments.push(attachment)
     }
@@ -112,14 +112,17 @@ export class ComposeMail implements IComposeIrmaSealMail {
         if (this.attachments.length > 0) {
             let mimeAttachments = ""
             this.attachments.forEach((attachment) => {
-                const b64encoded = Buffer.from(attachment.body).toString("base64")
-                const encryptedData = b64encoded.replace(/(.{80})/g, "$1\n")
+                // merge nonce and body of attachment (nonce header does not work as ignored by Exchange)
+                const mergedArray = new Uint8Array(attachment.nonce.length + attachment.body.length);
+                mergedArray.set(attachment.nonce);
+                mergedArray.set(attachment.body, attachment.nonce.length);
+                const b64encoded = Buffer.from(mergedArray).toString("base64").replace(/(.{80})/g, "$1\n")
+
                 mimeAttachments += `--${this.boundary}\r\n`
                 mimeAttachments += "Content-Type: application/octet-stream\r\n"
-                mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}"\r\n`
-                mimeAttachments += `Nonce: ${attachment.nonce}\r\n`
+                mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}.enc"\r\n`
                 mimeAttachments += "Content-Transfer-Encoding: base64\r\n\r\n"
-                mimeAttachments += `${encryptedData}\r\n\r\n`
+                mimeAttachments += `${b64encoded}\r\n\r\n`
             })
             return mimeAttachments
         }
