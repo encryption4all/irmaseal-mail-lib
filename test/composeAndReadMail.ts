@@ -3,6 +3,7 @@ import {ComposeMail, ReadMail} from "./../dist/index";
 console.log("\n\n====== composeMail.ts examples ======")
 
 const CT: string = "ABCDEF"
+const ATTACHMENT: string = "ATTACHMENT"
 const enc = new TextEncoder()
 const VERSION: string = "Version 1"
 
@@ -13,6 +14,7 @@ composeMail.addRecipient("irmasealtest@gmail.com")
 composeMail.setCiphertext(enc.encode(CT))
 composeMail.setSubject("Test")
 composeMail.setVersion("1")
+composeMail.addAttachment(enc.encode(ATTACHMENT))
 
 console.log("Composed mime mail: \n", composeMail.getMimeMail())
 
@@ -22,9 +24,12 @@ readMail.parseMail(composeMail.getMimeMail())
 
 console.log("Readmail version: ", readMail.getVersion())
 
-const sealBytes = new TextDecoder().decode(readMail.getCiphertext())
+const ctBytes = new TextDecoder().decode(readMail.getCiphertext())
+console.log("Readmail ct: ", ctBytes)
 
-console.log("Readmail ct: ", sealBytes)
+const attachmentBytes = new TextDecoder().decode(readMail.getAttachments()[0])
+console.log("Readmail attachment: ", attachmentBytes)
 
-console.assert(CT.localeCompare(sealBytes)===0)
+console.assert(CT.localeCompare(ctBytes)===0)
 console.assert(VERSION.localeCompare(readMail.getVersion())===0)
+console.assert(ATTACHMENT.localeCompare(attachmentBytes)===0)

@@ -6,6 +6,7 @@ interface IComposeIrmaSealMail {
     setSender(sender: string)
     setSubject(subject: string): void
     setCiphertext(ct: Uint8Array): void
+    addAttachment(ct: Uint8Array): void
     getMimeMail(): string
     getMimeHeader(): string
     getMimeBody(): string
@@ -18,9 +19,11 @@ export class ComposeMail implements IComposeIrmaSealMail {
     private ct: Uint8Array
     private version: string
     readonly boundary: string
+    private attachments: Uint8Array[]
 
     constructor() {
         this.boundary = this.generateBoundary()
+        this.attachments = []
     }
 
     /**
@@ -48,6 +51,10 @@ export class ComposeMail implements IComposeIrmaSealMail {
         this.sender = sender
     }
 
+    addAttachment(ct: Uint8Array) {
+        this.attachments.push(ct)
+    }
+
     /**
      * Returns the MIME body
      */
@@ -59,8 +66,9 @@ export class ComposeMail implements IComposeIrmaSealMail {
             const version = Buffer.from(`Version ${this.version}`).toString("base64")
             const encryptedData = b64encoded.replace(/(.{80})/g, "$1\n")
 
-            let content = "Content-Type: text/plain\r\n\r\n"
-            content += "This is an IRMAseal/MIME encrypted message.\r\n\r\n"
+            let content = `--${this.boundary }\r\n`
+            content += "Content-Type: text/html\r\n\r\n"
+            content += "<h1>IRMASeal mail</h1><p>This is an IRMAseal/MIME encrypted message.</p><p><a href='irma.app'>irma.app</a></p>\r\n\r\n"
             content += `--${this.boundary }\r\n`
             content += "Content-Type: application/irmaseal\r\n"
             content += "Content-Transfer-Encoding: base64\r\n\r\n"
@@ -69,7 +77,6 @@ export class ComposeMail implements IComposeIrmaSealMail {
             content += "Content-Type: application/octet-stream\r\n"
             content += "Content-Transfer-Encoding: base64\r\n\r\n"
             content += `${encryptedData}\r\n\r\n`
-            content += `--${this.boundary }--\r\n`
             return content;
         }
     }
@@ -86,7 +93,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
                 To: `${this.recipient}`,
                 From: `${this.sender}`,
                 "MIME-Version": "1.0",
-                "Content-Type": `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
+                "Content-Type": `multipart/mixed; protocol="application/irmaseal"; boundary=${this.boundary}`,
             }
 
             let headerStr = ""
@@ -99,10 +106,30 @@ export class ComposeMail implements IComposeIrmaSealMail {
     }
 
     /**
-     * Returns both the Mime header and body concatonated
+     * Returns MIME attachments
+     */
+    getMimeAttachments(): string {
+        if (this.attachments.length > 0) {
+            let mimeAttachments = ""
+            const boundary = this.boundary
+            this.attachments.forEach(function (attachment) {
+                const b64encoded = Buffer.from(attachment).toString("base64")
+                const encryptedData = b64encoded.replace(/(.{80})/g, "$1\n")
+                mimeAttachments += `--${boundary}\r\n`
+                mimeAttachments += "Content-Type: application/octet-stream\r\n"
+                mimeAttachments += "Content-Transfer-Encoding: base64\r\n\r\n"
+                mimeAttachments += `${encryptedData}\r\n\r\n`
+            })
+            return mimeAttachments
+        }
+        return ""
+    }
+
+    /**
+     * Returns the Mime header, body and attachments concatonated
      */
     getMimeMail(): string {
-        return `${this.getMimeHeader()}\n${this.getMimeBody()}`;
+        return `${this.getMimeHeader()}\n${this.getMimeBody()}\n${this.getMimeAttachments()}--${this.boundary}--\r\n`;
     }
 
     /**

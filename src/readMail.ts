@@ -2,25 +2,35 @@ interface IReadIrmaSealMail {
     parseMail(s: string): void
     getVersion(): string
     getCiphertext(): Uint8Array
+    getAttachments(): Uint8Array[]
 }
 
 export class ReadMail implements IReadIrmaSealMail {
-    private ct: Uint8Array;
-    private version: string;
+    private ct: Uint8Array
+    private attachments: Uint8Array[]
+    private version: string
+
+    constructor() {
+        this.attachments = []
+    }
 
     /**
      * Gets the ciphertext of the mail
      * Ensure to b64 decode the CT like: Buffer.from(readMail.getCiphertext(), "base64").toString("utf-8")
      */
     getCiphertext(): Uint8Array {
-        return this.ct;
+        return this.ct
     }
 
     /**
      * Gets the version of the mail
      */
     getVersion(): string {
-        return this.version;
+        return this.version
+    }
+
+    getAttachments(): Uint8Array[] {
+        return this.attachments
     }
 
     /**
@@ -37,8 +47,13 @@ export class ReadMail implements IReadIrmaSealMail {
             .split(`--${boundary}`)
             .slice(0, -1)
 
-        var ctPart: string
-        var versionPart: string
+        // needed for extracting possible attachments
+        const sections = dataBuffer
+            .split(`--${boundary}`)
+            .slice(0, -1)
+
+        let ctPart: string
+        let versionPart: string
 
         // check if mail contains 3 or 4 MIME parts (can depend on the client sending the mail)
         if (
@@ -65,5 +80,20 @@ export class ReadMail implements IReadIrmaSealMail {
             .match(regExp)[0]
             .replace(regExp, "$1")
             .replace(/(?:\r\n|\r|\n| )/g, ""), "base64"))
+
+        let attachmentsBegin = false
+        sections.forEach((section) => {
+            if (attachmentsBegin) {
+                const attachment = new Uint8Array(Buffer.from(section
+                    .match(regExp)[0]
+                    .replace(regExp, "$1")
+                    .replace(/(?:\r\n|\r|\n| )/g, ""), "base64"))
+                this.attachments.push(attachment)
+            }
+            // attachments always come after body part
+            else if (section == ctPart) {
+                attachmentsBegin = true
+            }
+        })
     }
 }
