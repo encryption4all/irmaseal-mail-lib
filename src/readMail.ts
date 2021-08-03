@@ -1,13 +1,15 @@
+import {IAttachment} from "./attachment"
+
 interface IReadIrmaSealMail {
     parseMail(s: string): void
     getVersion(): string
     getCiphertext(): Uint8Array
-    getAttachments(): Uint8Array[]
+    getAttachments(): IAttachment[]
 }
 
 export class ReadMail implements IReadIrmaSealMail {
     private ct: Uint8Array
-    private attachments: Uint8Array[]
+    private attachments: IAttachment[]
     private version: string
 
     constructor() {
@@ -29,7 +31,7 @@ export class ReadMail implements IReadIrmaSealMail {
         return this.version
     }
 
-    getAttachments(): Uint8Array[] {
+    getAttachments(): IAttachment[] {
         return this.attachments
     }
 
@@ -84,10 +86,20 @@ export class ReadMail implements IReadIrmaSealMail {
         let attachmentsBegin = false
         sections.forEach((section) => {
             if (attachmentsBegin) {
-                const attachment = new Uint8Array(Buffer.from(section
+                const attachmentBody = new Uint8Array(Buffer.from(section
                     .match(regExp)[0]
                     .replace(regExp, "$1")
                     .replace(/(?:\r\n|\r|\n| )/g, ""), "base64"))
+
+                const fileName = section.match(/filename=(.*)/gm)[0]
+                    .replace("filename=", "")
+                    .replace(/"/g, "")
+
+                const nonce = section.match(/Nonce: (.*)/gm)[0]
+                    .replace("Nonce: ", "")
+                    .replace(/"/g, "")
+
+                const attachment: IAttachment = { body: attachmentBody, fileName:fileName, nonce:nonce}
                 this.attachments.push(attachment)
             }
             // attachments always come after body part

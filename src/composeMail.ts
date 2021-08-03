@@ -1,12 +1,11 @@
-
-// generate random string (30 - 40 chars)
+import {IAttachment} from "./attachment"
 
 interface IComposeIrmaSealMail {
     addRecipient(recipient: string): void // need to update logic later to support multiple recipients
     setSender(sender: string)
     setSubject(subject: string): void
     setCiphertext(ct: Uint8Array): void
-    addAttachment(ct: Uint8Array): void
+    addAttachment(ct: Uint8Array, fileName: string, nonce: string): void
     getMimeMail(): string
     getMimeHeader(): string
     getMimeBody(): string
@@ -19,7 +18,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
     private ct: Uint8Array
     private version: string
     readonly boundary: string
-    private attachments: Uint8Array[]
+    private attachments: IAttachment[]
 
     constructor() {
         this.boundary = this.generateBoundary()
@@ -51,8 +50,9 @@ export class ComposeMail implements IComposeIrmaSealMail {
         this.sender = sender
     }
 
-    addAttachment(ct: Uint8Array) {
-        this.attachments.push(ct)
+    addAttachment(ct: Uint8Array, fileName: string, nonce: string) {
+        const attachment: IAttachment = { body: ct, fileName:fileName, nonce:nonce}
+        this.attachments.push(attachment)
     }
 
     /**
@@ -111,12 +111,13 @@ export class ComposeMail implements IComposeIrmaSealMail {
     getMimeAttachments(): string {
         if (this.attachments.length > 0) {
             let mimeAttachments = ""
-            const boundary = this.boundary
-            this.attachments.forEach(function (attachment) {
-                const b64encoded = Buffer.from(attachment).toString("base64")
+            this.attachments.forEach((attachment) => {
+                const b64encoded = Buffer.from(attachment.body).toString("base64")
                 const encryptedData = b64encoded.replace(/(.{80})/g, "$1\n")
-                mimeAttachments += `--${boundary}\r\n`
+                mimeAttachments += `--${this.boundary}\r\n`
                 mimeAttachments += "Content-Type: application/octet-stream\r\n"
+                mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}"\r\n`
+                mimeAttachments += `Nonce: ${attachment.nonce}\r\n`
                 mimeAttachments += "Content-Transfer-Encoding: base64\r\n\r\n"
                 mimeAttachments += `${encryptedData}\r\n\r\n`
             })
@@ -157,4 +158,5 @@ export class ComposeMail implements IComposeIrmaSealMail {
 
         return text;
     }
+
 }
