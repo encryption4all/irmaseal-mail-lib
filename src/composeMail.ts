@@ -1,8 +1,8 @@
-// generate random string (30 - 40 chars)
+import { Buffer } from 'buffer'
 
 interface IComposeIrmaSealMail {
     addRecipient(recipient: string): void // need to update logic later to support multiple recipients
-    setSender(sender: string)
+    setSender(sender: string): void
     setSubject(subject: string): void
     setCiphertext(ct: Uint8Array): void
     getMimeMail(): string
@@ -51,50 +51,44 @@ export class ComposeMail implements IComposeIrmaSealMail {
      * Returns the MIME body
      */
     getMimeBody(): string {
-        if (!this.ct) {
-            throw new Error('Ct is empty')
-        } else {
-            const b64encoded = Buffer.from(this.ct).toString('base64')
-            const version = Buffer.from(`Version ${this.version}`).toString('base64')
-            const encryptedData = b64encoded.replace(/(.{80})/g, '$1\n')
+        if (!this.ct) throw new Error('No ciphertext')
+        const b64encoded = Buffer.from(this.ct).toString('base64')
+        const version = Buffer.from(`Version ${this.version}`).toString('base64')
+        const encryptedData = b64encoded.replace(/(.{80})/g, '$1\n')
 
-            let content = 'Content-Type: text/plain\r\n\r\n'
-            content += 'This is an IRMAseal/MIME encrypted message.\r\n\r\n'
-            content += `--${this.boundary}\r\n`
-            content += 'Content-Type: application/irmaseal\r\n'
-            content += 'Content-Transfer-Encoding: base64\r\n\r\n'
-            content += `${version}\r\n\r\n`
-            content += `--${this.boundary}\r\n`
-            content += 'Content-Type: application/octet-stream\r\n'
-            content += 'Content-Transfer-Encoding: base64\r\n\r\n'
-            content += `${encryptedData}\r\n\r\n`
-            content += `--${this.boundary}--\r\n`
-            return content
-        }
+        let content = 'Content-Type: text/plain\r\n\r\n'
+        content += 'This is an IRMAseal/MIME encrypted message.\r\n\r\n'
+        content += `--${this.boundary}\r\n`
+        content += 'Content-Type: application/irmaseal\r\n'
+        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
+        content += `${version}\r\n\r\n`
+        content += `--${this.boundary}\r\n`
+        content += 'Content-Type: application/octet-stream\r\n'
+        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
+        content += `${encryptedData}\r\n\r\n`
+        content += `--${this.boundary}--\r\n`
+        return content
     }
 
     /**
      * Returns the MIME header
      */
     getMimeHeader(): string {
-        if (!this.sender || !this.recipient || !this.subject || !this.ct) {
-            throw new Error('One of sender, recipient or subject')
-        } else {
-            const headers = {
-                Subject: `${this.subject}`,
-                To: `${this.recipient}`,
-                From: `${this.sender}`,
-                'MIME-Version': '1.0',
-                'Content-Type': `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
-            }
-
-            let headerStr = ''
-            for (const [k, v] of Object.entries(headers)) {
-                headerStr += `${k}: ${v}\r\n`
-            }
-            headerStr += '\r\n\r\n'
-            return headerStr
+        if (!this.ct) throw new Error('No ciphertext')
+        const headers = {
+            ...(this.subject && { Subject: `${this.subject}` }),
+            ...(this.recipient && { To: `${this.recipient}` }),
+            ...(this.sender && { From: `${this.sender}` }),
+            'MIME-Version': '1.0',
+            'Content-Type': `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
         }
+
+        let headerStr = ''
+        for (const [k, v] of Object.entries(headers)) {
+            headerStr += `${k}: ${v}\r\n`
+        }
+        headerStr += '\r\n\r\n'
+        return headerStr
     }
 
     /**

@@ -17,5 +17,7 @@
         "test": "cd test && tsc *.ts && node composeAndReadMail.js && node readExchangeMail.js",
         "prettier": "prettier --write src/"
     },
-    "dependencies": {}
+    "dependencies": {
+        "buffer": "^6.0.3"
+    }
 }

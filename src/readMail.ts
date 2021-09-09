@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer'
+
 interface IReadIrmaSealMail {
     parseMail(s: string): void
     getVersion(): string
