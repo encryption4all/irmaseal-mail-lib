@@ -15,7 +15,7 @@ console.log("Composed mime mail: \n", composeMail.getMimeMail());
 var readMail = new index_1.ReadMail();
 readMail.parseMail(composeMail.getMimeMail());
 console.log("Readmail version: ", readMail.getVersion());
-var sealBytes = new TextDecoder().decode(readMail.getCiphertext()); // Buffer.from(readMail.getCiphertext(), "base64").toString("utf-8")
+var sealBytes = new TextDecoder().decode(readMail.getCiphertext());
 console.log("Readmail ct: ", sealBytes);
 console.assert(CT.localeCompare(sealBytes) === 0);
 console.assert(VERSION.localeCompare(readMail.getVersion()) === 0);

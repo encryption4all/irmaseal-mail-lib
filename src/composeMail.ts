@@ -1,4 +1,3 @@
-
 // generate random string (30 - 40 chars)
 
 interface IComposeIrmaSealMail {
@@ -53,24 +52,24 @@ export class ComposeMail implements IComposeIrmaSealMail {
      */
     getMimeBody(): string {
         if (!this.ct) {
-            throw new Error("Ct is empty")
+            throw new Error('Ct is empty')
         } else {
-            const b64encoded = Buffer.from(this.ct).toString("base64")
-            const version = Buffer.from(`Version ${this.version}`).toString("base64")
-            const encryptedData = b64encoded.replace(/(.{80})/g, "$1\n")
+            const b64encoded = Buffer.from(this.ct).toString('base64')
+            const version = Buffer.from(`Version ${this.version}`).toString('base64')
+            const encryptedData = b64encoded.replace(/(.{80})/g, '$1\n')
 
-            let content = "Content-Type: text/plain\r\n\r\n"
-            content += "This is an IRMAseal/MIME encrypted message.\r\n\r\n"
-            content += `--${this.boundary }\r\n`
-            content += "Content-Type: application/irmaseal\r\n"
-            content += "Content-Transfer-Encoding: base64\r\n\r\n"
+            let content = 'Content-Type: text/plain\r\n\r\n'
+            content += 'This is an IRMAseal/MIME encrypted message.\r\n\r\n'
+            content += `--${this.boundary}\r\n`
+            content += 'Content-Type: application/irmaseal\r\n'
+            content += 'Content-Transfer-Encoding: base64\r\n\r\n'
             content += `${version}\r\n\r\n`
-            content += `--${this.boundary }\r\n`
-            content += "Content-Type: application/octet-stream\r\n"
-            content += "Content-Transfer-Encoding: base64\r\n\r\n"
+            content += `--${this.boundary}\r\n`
+            content += 'Content-Type: application/octet-stream\r\n'
+            content += 'Content-Transfer-Encoding: base64\r\n\r\n'
             content += `${encryptedData}\r\n\r\n`
-            content += `--${this.boundary }--\r\n`
-            return content;
+            content += `--${this.boundary}--\r\n`
+            return content
         }
     }
 
@@ -79,22 +78,22 @@ export class ComposeMail implements IComposeIrmaSealMail {
      */
     getMimeHeader(): string {
         if (!this.sender || !this.recipient || !this.subject || !this.ct) {
-            throw new Error("One of sender, recipient or subject")
+            throw new Error('One of sender, recipient or subject')
         } else {
             const headers = {
                 Subject: `${this.subject}`,
                 To: `${this.recipient}`,
                 From: `${this.sender}`,
-                "MIME-Version": "1.0",
-                "Content-Type": `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
+                'MIME-Version': '1.0',
+                'Content-Type': `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
             }
 
-            let headerStr = ""
+            let headerStr = ''
             for (const [k, v] of Object.entries(headers)) {
                 headerStr += `${k}: ${v}\r\n`
             }
-            headerStr += "\r\n\r\n"
-            return headerStr;
+            headerStr += '\r\n\r\n'
+            return headerStr
         }
     }
 
@@ -102,7 +101,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
      * Returns both the Mime header and body concatonated
      */
     getMimeMail(): string {
-        return `${this.getMimeHeader()}\n${this.getMimeBody()}`;
+        return `${this.getMimeHeader()}\n${this.getMimeBody()}`
     }
 
     /**
@@ -122,12 +121,12 @@ export class ComposeMail implements IComposeIrmaSealMail {
     }
 
     private generateBoundary(): string {
-        let text = "";
-        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let text = ''
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
         for (let i = 0; i < 30; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+            text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-        return text;
+        return text
     }
 }
