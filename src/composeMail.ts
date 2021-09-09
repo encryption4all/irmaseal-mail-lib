@@ -1,3 +1,5 @@
+// include ./readMail.js
+
 import {IAttachment} from "./attachment"
 
 interface IComposeIrmaSealMail {

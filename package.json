@@ -1,5 +1,5 @@
 {
-  "name": "irmaseal-mail-utils",
+  "name": "@e4a/irmaseal-mail-utils",
   "version": "0.0.1",
   "description": "Irmaseal mail utils library providing functionality to read and compose Irmaseal MIME mails",
   "main": "dist/index.js",
@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && mkdir dist && tsc",
-    "test": "cd test && tsc *.ts && node composeAndReadMail.js && node readExchangeMail.js"
+    "test": "npm run build && cd test && tsc *.ts && node composeAndReadMail.js && node readExchangeMail.js",
+    "bundle": "npm run build && bundle-js dist/composeMail.js  -o dist/bundleMailUtils.js"
   },
   "dependencies": {
     "buffer": "^6.0.3"
