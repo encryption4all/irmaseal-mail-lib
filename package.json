@@ -1,6 +1,6 @@
 {
   "name": "@e4a/irmaseal-mail-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "IRMAseal mail utils library providing functionality to read and compose IRMAseal MIME mails",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,5 +18,6 @@
     "bundle": "npm run build && bundle-js dist/composeMail.js  -o dist/bundleMailUtils.js",
     "format": "prettier --write ./src"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "license": "MIT"
 }
