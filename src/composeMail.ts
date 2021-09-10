@@ -64,6 +64,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
      */
     getMimeBody(): string {
         if (!this.ct) throw new Error('No ciphertext')
+
         const b64encoded = Buffer.from(this.ct).toString('base64')
         const version = Buffer.from(`Version ${this.version}`).toString(
             'base64'
@@ -81,7 +82,8 @@ export class ComposeMail implements IComposeIrmaSealMail {
         content += `--${this.boundary}\r\n`
         content += 'Content-Type: application/octet-stream\r\n'
         content += 'Content-Transfer-Encoding: base64\r\n\r\n'
-        content += `${encryptedData}\r\n\r\n`
+        content += `${encryptedData}\r\n`
+
         return content
     }
 
@@ -102,7 +104,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
         for (const [k, v] of Object.entries(headers)) {
             headerStr += `${k}: ${v}\r\n`
         }
-        headerStr += '\r\n\r\n'
+
         return headerStr
     }
 
@@ -110,28 +112,29 @@ export class ComposeMail implements IComposeIrmaSealMail {
      * Returns MIME attachments
      */
     getMimeAttachments(): string {
-        if (this.attachments.length > 0) {
-            let mimeAttachments = ''
-            this.attachments.forEach((attachment) => {
-                // merge nonce and body of attachment (nonce header does not work as ignored by Exchange)
-                const mergedArray = new Uint8Array(
-                    attachment.nonce.length + attachment.body.length
-                )
-                mergedArray.set(attachment.nonce)
-                mergedArray.set(attachment.body, attachment.nonce.length)
-                const b64encoded = Buffer.from(mergedArray)
-                    .toString('base64')
-                    .replace(/(.{80})/g, '$1\n')
+        let mimeAttachments = ''
+        if (!this.attachments.length) return mimeAttachments
 
-                mimeAttachments += `--${this.boundary}\r\n`
-                mimeAttachments += 'Content-Type: application/octet-stream\r\n'
-                mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}.enc"\r\n`
-                mimeAttachments += 'Content-Transfer-Encoding: base64\r\n\r\n'
-                mimeAttachments += `${b64encoded}\r\n\r\n`
-            })
-            return mimeAttachments
-        }
-        return ''
+        this.attachments.forEach((attachment) => {
+            // merge nonce and body of attachment (nonce header does not work as ignored by Exchange)
+            const mergedArray = new Uint8Array(
+                attachment.nonce.length + attachment.body.length
+            )
+            mergedArray.set(attachment.nonce)
+            mergedArray.set(attachment.body, attachment.nonce.length)
+            const b64encoded = Buffer.from(mergedArray)
+                .toString('base64')
+                .replace(/(.{80})/g, '$1\n')
+
+            mimeAttachments += `--${this.boundary}\r\n`
+            mimeAttachments += 'Content-Type: application/octet-stream\r\n'
+            mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}.enc"\r\n`
+            mimeAttachments += 'Content-Transfer-Encoding: base64\r\n\r\n'
+            mimeAttachments += `${b64encoded}\r\n`
+
+        })
+
+        return mimeAttachments
     }
 
     /**
@@ -141,9 +144,9 @@ export class ComposeMail implements IComposeIrmaSealMail {
     getMimeMail(includeVersion: boolean = true): string {
         return `${this.getMimeHeader(
             includeVersion
-        )}\n${this.getMimeBody()}\n${this.getMimeAttachments()}--${
+        )}\r\n${this.getMimeBody()}\r\n${this.getMimeAttachments()}--${
             this.boundary
-        }--\r\n`
+        }--`
     }
 
     /**
