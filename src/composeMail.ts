@@ -87,13 +87,14 @@ export class ComposeMail implements IComposeIrmaSealMail {
 
     /**
      * Returns the MIME header
+     * @param includeVersion, whether or not to include the mime version (default = true)
      */
-    getMimeHeader(): string {
+    getMimeHeader(includeVersion: boolean = true): string {
         const headers = {
             ...(this.subject && { Subject: `${this.subject}` }),
             ...(this.recipient && { To: `${this.recipient}` }),
             ...(this.sender && { From: `${this.sender}` }),
-            'MIME-Version': '1.0',
+            ...(includeVersion && { 'MIME-Version': '1.0' }),
             'Content-Type': `multipart/mixed; protocol="application/irmaseal"; boundary=${this.boundary}`,
         }
 
@@ -135,9 +136,12 @@ export class ComposeMail implements IComposeIrmaSealMail {
 
     /**
      * Returns the Mime header, body and attachments concatonated
+     * @param, whether or not to include the MIME version in the headers (default = true)
      */
-    getMimeMail(): string {
-        return `${this.getMimeHeader()}\n${this.getMimeBody()}\n${this.getMimeAttachments()}--${
+    getMimeMail(includeVersion: boolean = true): string {
+        return `${this.getMimeHeader(
+            includeVersion
+        )}\n${this.getMimeBody()}\n${this.getMimeAttachments()}--${
             this.boundary
         }--\r\n`
     }
