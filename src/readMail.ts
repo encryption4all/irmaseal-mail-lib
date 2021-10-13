@@ -99,9 +99,6 @@ export class ReadMail implements IReadIrmaSealMail {
                     )
                 )
 
-                const nonce = attachmentBody.slice(0, 16)
-                attachmentBody = attachmentBody.slice(16)
-
                 const fileName = section
                     .match(/filename=(.*);?/gm)[0]
                     .replace('filename=', '')
@@ -112,7 +109,6 @@ export class ReadMail implements IReadIrmaSealMail {
                 const attachment: IAttachment = {
                     body: attachmentBody,
                     fileName: fileName,
-                    nonce: nonce,
                 }
                 this.attachments.push(attachment)
             }

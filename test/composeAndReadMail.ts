@@ -5,7 +5,6 @@ console.log("\n\n====== composeMail.ts examples ======")
 const CT: string = "ABCDEF"
 const ATTACHMENT: string = "ATTACHMENTCONTENT"
 const FILENAME: string = "ATTACHMENT.TXT"
-const NONCE = new Uint8Array([49,50,51,52,53,54,55,56,49,49,50,51,53,54,49,50])
 const VERSION: string = "Version 1"
 const enc = new TextEncoder()
 const dec = new TextDecoder()
@@ -17,7 +16,7 @@ composeMail.addRecipient("irmasealtest@gmail.com")
 composeMail.setCiphertext(enc.encode(CT))
 composeMail.setSubject("Test")
 composeMail.setVersion("1")
-composeMail.addAttachment(enc.encode(ATTACHMENT), FILENAME, NONCE)
+composeMail.addAttachment(enc.encode(ATTACHMENT), FILENAME)
 
 console.log("Composed mime mail: \n", composeMail.getMimeMail())
 

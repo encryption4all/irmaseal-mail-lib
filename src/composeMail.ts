@@ -50,11 +50,10 @@ export class ComposeMail implements IComposeIrmaSealMail {
         this.sender = sender
     }
 
-    addAttachment(ct: Uint8Array, fileName: string, nonce: Uint8Array) {
+    addAttachment(ct: Uint8Array, fileName: string) {
         const attachment: IAttachment = {
             body: ct,
-            fileName: fileName,
-            nonce: nonce,
+            fileName: fileName
         }
         this.attachments.push(attachment)
     }
@@ -116,13 +115,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
         if (!this.attachments.length) return mimeAttachments
 
         this.attachments.forEach((attachment) => {
-            // merge nonce and body of attachment (nonce header does not work as ignored by Exchange)
-            const mergedArray = new Uint8Array(
-                attachment.nonce.length + attachment.body.length
-            )
-            mergedArray.set(attachment.nonce)
-            mergedArray.set(attachment.body, attachment.nonce.length)
-            const b64encoded = Buffer.from(mergedArray)
+            const b64encoded = Buffer.from(attachment.body)
                 .toString('base64')
                 .replace(/(.{80})/g, '$1\n')
 
@@ -131,9 +124,8 @@ export class ComposeMail implements IComposeIrmaSealMail {
             mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}.enc"\r\n`
             mimeAttachments += 'Content-Transfer-Encoding: base64\r\n\r\n'
             mimeAttachments += `${b64encoded}\r\n`
-
         })
-
+        
         return mimeAttachments
     }
 
