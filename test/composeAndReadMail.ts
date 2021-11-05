@@ -31,7 +31,7 @@ console.log("Readmail ct: ", ctBytes)
 
 const attachment = readMail.getAttachments()[0]
 const attachmentBytes = dec.decode(attachment.body)
-console.log("Readmail attachment: ", attachmentBytes)
+console.log("Readmail attachment: ", attachmentBytes, ", filename: " + attachment.fileName)
 
 console.assert(CT.localeCompare(ctBytes)===0)
 console.assert(VERSION.localeCompare(readMail.getVersion())===0)

@@ -35,6 +35,17 @@ export class ReadMail implements IReadIrmaSealMail {
         return this.attachments
     }
 
+    private getMatches(string, regex, index): string[] {
+        index || (index = 1); // default to the first capturing group
+        let matches = [];
+        let match;
+        while (match = regex.exec(string)) {
+            matches.push(match[index]);
+        }
+        return matches;
+    }
+
+
     /**
      * Parses the IRMASeal encrypted mail
      * @param dataBuffer, the mime mail as string buffer
@@ -45,12 +56,8 @@ export class ReadMail implements IReadIrmaSealMail {
             .replace('boundary=', '')
             .replace(/"/g, '')
 
-        const [_, section2, section3, section4] = dataBuffer
+        const [_, section2, section3, section4, ...attachments] = dataBuffer
             .split(`--${boundary}`)
-            .slice(0, -1)
-
-        // needed for extracting possible attachments
-        const sections = dataBuffer.split(`--${boundary}`).slice(0, -1)
 
         let ctPart: string
         let versionPart: string
@@ -58,7 +65,7 @@ export class ReadMail implements IReadIrmaSealMail {
         // check if mail contains 3 or 4 MIME parts (can depend on the client sending the mail)
         if (
             section4 === undefined ||
-            section3.search('Content-Type: application/octet-stream') !== -1
+            section3.search('Content-Type: application/irmaseal; name="irmaseal.encrypted"') !== -1
         ) {
             versionPart = section2
             ctPart = section3
@@ -67,54 +74,34 @@ export class ReadMail implements IReadIrmaSealMail {
             ctPart = section4
         }
 
-        const regExp = /Content-Transfer-Encoding: base64\r?\n\r?\n([\s\S]*)/gm
+        const regExp = /Content-Type: application\/irmaseal; name=\"(.*)\"\r?\n\r?\n([\w]*)/gm
 
-        versionPart = versionPart
-            .match(regExp)[0]
-            .replace(regExp, '$1')
-            .replace(' ', '')
-            .replace('\r\n', '')
+        versionPart = this.getMatches(versionPart, regExp, 2)[0]
         this.version = Buffer.from(versionPart, 'base64').toString('utf-8')
 
+        ctPart = this.getMatches(ctPart, regExp, 2)[0]
         this.ct = new Uint8Array(
-            Buffer.from(
-                ctPart
-                    .match(regExp)[0]
-                    .replace(regExp, '$1')
-                    .replace(/(?:\r\n|\r|\n| )/g, ''),
+            Buffer.from(ctPart,
                 'base64'
             )
         )
 
-        let attachmentsBegin = false
-        sections.forEach((section) => {
-            if (attachmentsBegin) {
+        attachments.forEach((section) => {
+            if (section.length > 2) {
                 let attachmentBody = new Uint8Array(
                     Buffer.from(
-                        section
-                            .match(regExp)[0]
-                            .replace(regExp, '$1')
-                            .replace(/(?:\r\n|\r|\n| )/g, ''),
+                        this.getMatches(section, regExp, 2)[0],
                         'base64'
                     )
                 )
 
-                const fileName = section
-                    .match(/filename=(.*);?/gm)[0]
-                    .replace('filename=', '')
-                    .replace('.enc', '')
-                    .replace(/;.*/, '')
-                    .replace(/"/g, '')
+                const fileName = this.getMatches(section, regExp, 1)[0]
 
                 const attachment: IAttachment = {
                     body: attachmentBody,
-                    fileName: fileName,
+                    fileName: fileName.split(".enc")[0],
                 }
                 this.attachments.push(attachment)
-            }
-            // attachments always come after mail message body part
-            else if (section == ctPart) {
-                attachmentsBegin = true
             }
         })
     }

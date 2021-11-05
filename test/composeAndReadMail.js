@@ -23,7 +23,7 @@ var ctBytes = dec.decode(readMail.getCiphertext());
 console.log("Readmail ct: ", ctBytes);
 var attachment = readMail.getAttachments()[0];
 var attachmentBytes = dec.decode(attachment.body);
-console.log("Readmail attachment: ", attachmentBytes);
+console.log("Readmail attachment: ", attachmentBytes, ", filename: " + attachment.fileName);
 console.assert(CT.localeCompare(ctBytes) === 0);
 console.assert(VERSION.localeCompare(readMail.getVersion()) === 0);
 console.assert(ATTACHMENT.localeCompare(attachmentBytes) === 0);

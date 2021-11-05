@@ -18,10 +18,12 @@ export class ComposeMail implements IComposeIrmaSealMail {
     private ct: Uint8Array
     private version: string
     readonly boundary: string
+    readonly boundaryAlt: string
     private attachments: IAttachment[]
 
     constructor() {
         this.boundary = this.generateBoundary()
+        this.boundaryAlt = this.generateBoundary()
         this.attachments = []
     }
 
@@ -71,16 +73,21 @@ export class ComposeMail implements IComposeIrmaSealMail {
         const encryptedData = b64encoded.replace(/(.{80})/g, '$1\n')
 
         let content = `--${this.boundary}\r\n`
+        content += `Content-Type: multipart/alternative; boundary=${this.boundaryAlt}\r\n\r\n`
+        content += `--${this.boundaryAlt}\r\n`
+        content += 'Content-Type: text/plain\r\n\r\n'
+        content +=
+            "This is an IRMAseal/MIME encrypted message. See https://irma.app for more details.\r\n\r\n"
+        content += `--${this.boundaryAlt}\r\n`
         content += 'Content-Type: text/html\r\n\r\n'
         content +=
             "<h1>IRMASeal mail</h1><p>This is an IRMAseal/MIME encrypted message.</p><p><a href='irma.app'>irma.app</a></p>\r\n\r\n"
+        content += `--${this.boundaryAlt}\r\n\r\n`
         content += `--${this.boundary}\r\n`
-        content += 'Content-Type: application/irmaseal\r\n'
-        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
+        content += 'Content-Type: application/irmaseal; name="irmaseal.version"\r\n\r\n'
         content += `${version}\r\n\r\n`
         content += `--${this.boundary}\r\n`
-        content += 'Content-Type: application/octet-stream\r\n'
-        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
+        content += 'Content-Type: application/irmaseal; name="irmaseal.encrypted"\r\n\r\n'
         content += `${encryptedData}\r\n`
 
         return content
@@ -120,9 +127,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
                 .replace(/(.{80})/g, '$1\n')
 
             mimeAttachments += `--${this.boundary}\r\n`
-            mimeAttachments += 'Content-Type: application/octet-stream\r\n'
-            mimeAttachments += `Content-Disposition: attachment; filename="${attachment.fileName}.enc"\r\n`
-            mimeAttachments += 'Content-Transfer-Encoding: base64\r\n\r\n'
+            mimeAttachments += `Content-Type: application/irmaseal; name="${attachment.fileName}.enc"\r\n\r\n`
             mimeAttachments += `${b64encoded}\r\n`
         })
         
