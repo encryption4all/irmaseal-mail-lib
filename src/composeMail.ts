@@ -2,7 +2,7 @@ interface IComposeIrmaSealMail {
     addRecipient(recipient: string): void // need to update logic later to support multiple recipients
     setSender(sender: string): void
     setSubject(subject: string): void
-    setPayload(ct: Uint8Array): void
+    setPayload(payload: Uint8Array): void
     getMimeMail(): string
     getMimeHeader(): string
     getMimeBody(): string
@@ -72,7 +72,8 @@ export class ComposeMail implements IComposeIrmaSealMail {
             "<h1>IRMASeal mail</h1><p>This is an IRMAseal/MIME encrypted message.</p><p><a href='irma.app'>irma.app</a></p>\r\n\r\n"
         content += `--${this.boundaryAlt}\r\n\r\n`
         content += `--${this.boundary}\r\n`
-        content += 'Content-Type: application/irmaseal; name="irmaseal.encrypted"\r\n\r\n'
+        content += 'Content-Type: application/irmaseal; name="irmaseal.encrypted"\r\n'
+        content += 'Content-Transfer-Encoding: base64"\r\n\r\n'
         content += `${encryptedData}\r\n`
 
         return content
@@ -90,7 +91,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
             ...(this.bccRecipients.length > 0 && { Bcc: `${this.bccRecipients.toString()}` }),
             ...(this.sender && { From: `${this.sender}` }),
             ...(includeVersion && { 'MIME-Version': '1.0' }),
-            'Content-Type': `multipart/mixed; protocol="application/irmaseal"; boundary=${this.boundary}`,
+            'Content-Type': `multipart/encrypted; protocol="application/irmaseal"; boundary=${this.boundary}`,
         }
 
         let headerStr = ''
@@ -115,10 +116,10 @@ export class ComposeMail implements IComposeIrmaSealMail {
 
     /**
      * Sets the ciphertext of the mail
-     * @param {string} ct, the ciphertext
+     * @param {string} payload, the ciphertext
      */
-    setPayload(ct: Uint8Array): void {
-        this.payload = ct
+    setPayload(payload: Uint8Array): void {
+        this.payload = payload
     }
 
     /**

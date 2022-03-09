@@ -15,7 +15,7 @@
   "scripts": {
     "build-linux": "rm -rf dist && mkdir dist && tsc",
     "build-win": "rmdir /s /q dist && mkdir dist && tsc",
-    "test": "npm run build && cd test && tsc *.ts && node composeAndReadMail.js && node readExchangeMail.js",
+    "test": "cd test && tsc composeAndReadMail.ts && tsc readExchangeMail.ts && node composeAndReadMail.js && node readExchangeMail.js",
     "bundle": "npm run build && bundle-js dist/composeMail.js  -o dist/bundleMailUtils.js",
     "format": "prettier --write ./src"
   },
