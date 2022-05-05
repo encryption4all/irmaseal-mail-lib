@@ -35,7 +35,7 @@ export class ReadMail implements IReadIrmaSealMail {
             .replace('boundary=', '')
             .replace(/"/g, '')
         const parts = dataBuffer.split(`--${boundary}`)
-        const regExp = /Content-Type: application\/irmaseal; name=\"irmaseal\.encrypted\".*base64(.*)/gs
+        const regExp = /Content-Type: application\/postguard; name=\"postguard\.encrypted\".*base64(.*)/gs
         const ctPart = this.getMatches(parts[2], regExp, 1)[0]
         this.ct = new Uint8Array(
             Buffer.from(ctPart,
