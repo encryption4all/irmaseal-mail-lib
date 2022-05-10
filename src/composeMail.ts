@@ -6,6 +6,8 @@ interface IComposeIrmaSealMail {
     getMimeMail(): string
     getMimeHeader(): string
     getMimeBody(): string
+    getPlainText(): string
+    getHtmlText(): string
 }
 
 export class ComposeMail implements IComposeIrmaSealMail {
@@ -67,7 +69,85 @@ export class ComposeMail implements IComposeIrmaSealMail {
         content += `--${this.boundaryAlt}\r\n`
         content += 'Content-Type: text/plain\r\n\r\n'
         content +=
-            `You received a PostGuard encrypted email from ${this.sender}
+            `${this.getPlainText()}\r\n\r\n`
+        content += `--${this.boundaryAlt}\r\n`
+        content += 'Content-Type: text/html; charset=UTF-8\r\n\r\n'
+        content += `${this.getHtmlText()}\r\n\r\n`
+        content += `--${this.boundaryAlt}\r\n\r\n`
+        content += `--${this.boundary}\r\n`
+        content += 'Content-Type: application/postguard; name="postguard.encrypted"\r\n'
+        content += 'Content-Transfer-Encoding: base64"\r\n\r\n'
+        content += `${encryptedData}\r\n`
+
+        return content
+    }
+
+    /**
+     * Returns the MIME header
+     * @param includeVersion, whether or not to include the mime version (default = true)
+     */
+    getMimeHeader(includeVersion: boolean = true): string {
+        const headers = {
+            ...(this.subject && { Subject: `${this.subject}` }),
+            ...(this.recipients.length > 0 && { To: `${this.recipients.toString()}` }),
+            ...(this.ccRecipients.length > 0 && { Cc: `${this.ccRecipients.toString()}` }),
+            ...(this.bccRecipients.length > 0 && { Bcc: `${this.bccRecipients.toString()}` }),
+            ...(this.sender && { From: `${this.sender}` }),
+            ...(includeVersion && { 'MIME-Version': '1.0' }),
+            'Content-Type': `multipart/encrypted; protocol="application/postguard"; boundary=${this.boundary}`,
+        }
+
+        let headerStr = ''
+        for (const [k, v] of Object.entries(headers)) {
+            headerStr += `${k}: ${v}\r\n`
+        }
+
+        return headerStr
+    }
+
+
+    /**
+     * Returns the Mime header, body and attachments concatonated
+     * @param, whether or not to include the MIME version in the headers (default = true)
+     */
+    getMimeMail(includeVersion: boolean = true): string {
+        return `${this.getMimeHeader(
+            includeVersion
+        )}\r\n${this.getMimeBody()}--${this.boundary
+            }--`
+    }
+
+    /**
+     * Sets the ciphertext of the mail
+     * @param {string} payload, the ciphertext
+     */
+    setPayload(payload: Uint8Array): void {
+        this.payload = payload
+    }
+
+    /**
+     * Sets the subject of the mail
+     * @param {string} subject, the subject
+     */
+    setSubject(subject: string): void {
+        this.subject = subject
+    }
+
+    private generateBoundary(): string {
+        let text = ''
+        const possible =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+        for (let i = 0; i < 30; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length))
+
+        return text
+    }
+
+    getPlainText(): string {
+        if (!this.sender) throw new Error('No sender')
+
+        return `You received a PostGuard encrypted email from ${this.sender}
 There are three ways to read this protected email:
 1) If you use Outlook and have already installed PostGuard, click on the "Decrypt Email"-button. 
 This button can be found on the right side of the ribbon above.
@@ -92,19 +172,18 @@ really are the intended recipient of the email.
 IRMA is a separate privacy-friendly authentication app
 (which is used also for other authentication purposes).
 The free IMRA app can be downloaded via the App Store and Play Store.
-More information via: https://irma.app\r\n\r\n`
-        content += `--${this.boundaryAlt}\r\n`
-        content += 'Content-Type: text/html; charset=UTF-8\r\n\r\n'
-        content += `<!DOCTYPE html>
+More information via: https://irma.app`
+    }
+
+    getHtmlText(): string {
+        if (!this.sender) throw new Error('No sender')
+        
+        return `<!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <title>PostGuard encrypted email</title>
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta charset="UTF-8"/>
-
         <link href="https://overpass-30e2.kxcdn.com/overpass.css" rel="stylesheet" type="text/css"/>
         <link href="http://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet"/>
         <style>
@@ -327,75 +406,7 @@ This button can be found on the right side of the above menu.</p>
 
 </body>
 
-</html>\r\n\r\n`
-        content += `--${this.boundaryAlt}\r\n\r\n`
-        content += `--${this.boundary}\r\n`
-        content += 'Content-Type: application/postguard; name="postguard.encrypted"\r\n'
-        content += 'Content-Transfer-Encoding: base64"\r\n\r\n'
-        content += `${encryptedData}\r\n`
-
-        return content
+</html>`
     }
 
-    /**
-     * Returns the MIME header
-     * @param includeVersion, whether or not to include the mime version (default = true)
-     */
-    getMimeHeader(includeVersion: boolean = true): string {
-        const headers = {
-            ...(this.subject && { Subject: `${this.subject}` }),
-            ...(this.recipients.length > 0 && { To: `${this.recipients.toString()}` }),
-            ...(this.ccRecipients.length > 0 && { Cc: `${this.ccRecipients.toString()}` }),
-            ...(this.bccRecipients.length > 0 && { Bcc: `${this.bccRecipients.toString()}` }),
-            ...(this.sender && { From: `${this.sender}` }),
-            ...(includeVersion && { 'MIME-Version': '1.0' }),
-            'Content-Type': `multipart/encrypted; protocol="application/postguard"; boundary=${this.boundary}`,
-        }
-
-        let headerStr = ''
-        for (const [k, v] of Object.entries(headers)) {
-            headerStr += `${k}: ${v}\r\n`
-        }
-
-        return headerStr
-    }
-
-
-    /**
-     * Returns the Mime header, body and attachments concatonated
-     * @param, whether or not to include the MIME version in the headers (default = true)
-     */
-    getMimeMail(includeVersion: boolean = true): string {
-        return `${this.getMimeHeader(
-            includeVersion
-        )}\r\n${this.getMimeBody()}--${this.boundary
-            }--`
-    }
-
-    /**
-     * Sets the ciphertext of the mail
-     * @param {string} payload, the ciphertext
-     */
-    setPayload(payload: Uint8Array): void {
-        this.payload = payload
-    }
-
-    /**
-     * Sets the subject of the mail
-     * @param {string} subject, the subject
-     */
-    setSubject(subject: string): void {
-        this.subject = subject
-    }
-
-    private generateBoundary(): string {
-        let text = ''
-        const possible =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-        for (let i = 0; i < 30; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length))
-
-        return text
-    }
 }
