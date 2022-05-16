@@ -8,6 +8,8 @@ interface IComposeIrmaSealMail {
     getMimeBody(): string
     getPlainText(): string
     getHtmlText(): string
+    getHtmlTextB64(): string
+    getPlainTextB64(): string
 }
 
 export class ComposeMail implements IComposeIrmaSealMail {
@@ -67,12 +69,14 @@ export class ComposeMail implements IComposeIrmaSealMail {
         let content = `--${this.boundary}\r\n`
         content += `Content-Type: multipart/alternative; boundary=${this.boundaryAlt}\r\n\r\n`
         content += `--${this.boundaryAlt}\r\n`
-        content += 'Content-Type: text/plain\r\n\r\n'
+        content += 'Content-Type: text/plain\r\n'
+        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
         content +=
-            `${this.getPlainText()}\r\n\r\n`
+            `${this.getPlainTextB64()}\r\n\r\n`
         content += `--${this.boundaryAlt}\r\n`
-        content += 'Content-Type: text/html; charset=UTF-8\r\n\r\n'
-        content += `${this.getHtmlText()}\r\n\r\n`
+        content += 'Content-Type: text/html; charset=UTF-8\r\n'
+        content += 'Content-Transfer-Encoding: base64\r\n\r\n'
+        content += `${this.getHtmlTextB64()}\r\n\r\n`
         content += `--${this.boundaryAlt}\r\n\r\n`
         content += `--${this.boundary}\r\n`
         content += 'Content-Type: application/postguard; name="postguard.encrypted"\r\n'
@@ -173,6 +177,14 @@ IRMA is a separate privacy-friendly authentication app
 (which is used also for other authentication purposes).
 The free IMRA app can be downloaded via the App Store and Play Store.
 More information via: https://irma.app`
+    }
+
+    getPlainTextB64(): string { 
+        return btoa(this.getPlainText()).replace(/(.{76})/g, '$1\r\n')
+    }
+    
+    getHtmlTextB64(): string { 
+        return btoa(this.getHtmlText()).replace(/(.{76})/g, '$1\r\n')
     }
 
     getHtmlText(): string {

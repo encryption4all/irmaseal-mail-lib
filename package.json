@@ -1,6 +1,6 @@
 {
   "name": "@e4a/irmaseal-mail-utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "IRMAseal mail utils library providing functionality to read and compose IRMAseal MIME mails",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
