@@ -40,11 +40,11 @@ export class ComposeMail implements IComposeIrmaSealMail {
     addRecipient(recipient: string): void {
         this.recipients.push(recipient)
     }
-    
+
     addCcRecipient(recipient: string): void {
         this.ccRecipients.push(recipient)
     }
-    
+
     addBccRecipient(recipient: string): void {
         this.bccRecipients.push(recipient)
     }
@@ -71,15 +71,15 @@ export class ComposeMail implements IComposeIrmaSealMail {
         content += `--${this.boundaryAlt}\r\n`
         content += 'Content-Type: text/plain\r\n'
         content += 'Content-Transfer-Encoding: base64\r\n\r\n'
-        content +=
-            `${this.getPlainTextB64()}\r\n\r\n`
+        content += `${this.getPlainTextB64()}\r\n\r\n`
         content += `--${this.boundaryAlt}\r\n`
         content += 'Content-Type: text/html; charset=UTF-8\r\n'
         content += 'Content-Transfer-Encoding: base64\r\n\r\n'
         content += `${this.getHtmlTextB64()}\r\n\r\n`
         content += `--${this.boundaryAlt}\r\n\r\n`
         content += `--${this.boundary}\r\n`
-        content += 'Content-Type: application/postguard; name="postguard.encrypted"\r\n'
+        content +=
+            'Content-Type: application/postguard; name="postguard.encrypted"\r\n'
         content += 'Content-Transfer-Encoding: base64"\r\n\r\n'
         content += `${encryptedData}\r\n`
 
@@ -93,9 +93,15 @@ export class ComposeMail implements IComposeIrmaSealMail {
     getMimeHeader(includeVersion: boolean = true): string {
         const headers = {
             ...(this.subject && { Subject: `${this.subject}` }),
-            ...(this.recipients.length > 0 && { To: `${this.recipients.toString()}` }),
-            ...(this.ccRecipients.length > 0 && { Cc: `${this.ccRecipients.toString()}` }),
-            ...(this.bccRecipients.length > 0 && { Bcc: `${this.bccRecipients.toString()}` }),
+            ...(this.recipients.length > 0 && {
+                To: `${this.recipients.toString()}`,
+            }),
+            ...(this.ccRecipients.length > 0 && {
+                Cc: `${this.ccRecipients.toString()}`,
+            }),
+            ...(this.bccRecipients.length > 0 && {
+                Bcc: `${this.bccRecipients.toString()}`,
+            }),
             ...(this.sender && { From: `${this.sender}` }),
             ...(includeVersion && { 'MIME-Version': '1.0' }),
             'Content-Type': `multipart/encrypted; protocol="application/postguard"; boundary=${this.boundary}`,
@@ -109,7 +115,6 @@ export class ComposeMail implements IComposeIrmaSealMail {
         return headerStr
     }
 
-
     /**
      * Returns the Mime header, body and attachments concatonated
      * @param, whether or not to include the MIME version in the headers (default = true)
@@ -117,8 +122,7 @@ export class ComposeMail implements IComposeIrmaSealMail {
     getMimeMail(includeVersion: boolean = true): string {
         return `${this.getMimeHeader(
             includeVersion
-        )}\r\n${this.getMimeBody()}--${this.boundary
-            }--`
+        )}\r\n${this.getMimeBody()}--${this.boundary}--`
     }
 
     /**
@@ -155,19 +159,19 @@ export class ComposeMail implements IComposeIrmaSealMail {
 There are three ways to read this protected email:
 1) If you use Outlook and have already installed PostGuard, click on the "Decrypt Email"-button. 
 This button can be found on the right side of the ribbon above.
-2) You can decrypt and read this email via https://www.postguard.eu/decrypt/.
+2) You can decrypt and read this email via https://www.postguard.eu/#decrypt.
 This website can only decrypt emails.
 3) You can install the free PostGuard addon in your own mail client.
 This works for Outlook and Thunderbird.
-Download PostGuard via: https://www.postguard.eu
-After installation, you can not only decrypt and read emails but also all future Postguarded emails. 
-Moreover, you can easily send and receive secure emails with the PostGuard addon within your email client.
+Download PostGuard via: https://www.postguard.eu/#addons.
+After installation, you can not only decrypt and read this email but also all future Postguard emails. 
+Moreover, you can easily send secure emails with the PostGuard addon within your email client.
 
 What is PostGuard?
 
 PostGuard is a service for secure emailing. Only the intended recipient(s) can decrypt\r\nand read the emails sent with PostGuard. 
 The "Encryption for all"-team of the Radboud University has developed PostGuard.\r\nPostGuard uses the IRMA app for authentication. 
-More information via: https://www.postguard.eu
+More information via: https://www.postguard.eu.
 
 What is the IRMA app?
 
@@ -176,20 +180,20 @@ really are the intended recipient of the email.
 IRMA is a separate privacy-friendly authentication app
 (which is used also for other authentication purposes).
 The free IMRA app can be downloaded via the App Store and Play Store.
-More information via: https://irma.app`
+More information via: https://irma.app.`
     }
 
-    getPlainTextB64(): string { 
+    getPlainTextB64(): string {
         return btoa(this.getPlainText()).replace(/(.{76})/g, '$1\r\n')
     }
-    
-    getHtmlTextB64(): string { 
+
+    getHtmlTextB64(): string {
         return btoa(this.getHtmlText()).replace(/(.{76})/g, '$1\r\n')
     }
 
     getHtmlText(): string {
         if (!this.sender) throw new Error('No sender')
-        
+
         return `<!DOCTYPE html>
 <html lang="en">
     <head>
@@ -275,7 +279,7 @@ More information via: https://irma.app`
                         <div class="numberCounter">1</div>
                         <div style="margin-left: 34px">
                             <p>You can use the free PostGuard add-on that is available (currently only) for Outlook and Thunderbird.
-                                    It is available via <a href="https://www.postguard.eu">www.postguard.eu</a>.
+                                    It is available via <a href="https://www.postguard.eu/#addons">www.postguard.eu</a>.
                                     After installation, you can not only decrypt and read the current email but also all future Postguarded emails.
                                     Moreover, you can easily send secure emails yourself with the PostGuard add-on.</p>
                             <p>
@@ -287,8 +291,8 @@ This button can be found on the right side of the above menu.</p>
                     <div class="outer">
                         <div class="numberCounter">2</div>
                         <div style="margin-left: 34px">
-                        You can also decrypt and read this email via the fallback website <a href="https://www.postguard.eu/decrypt/">www.postguard.eu/decrypt/</a>.
-                        This website only decrypts the mail, and cannot be used for replying. PostGuards work better with its add-on than with this website.
+                        You can also decrypt and read this email via the fallback website <a href="https://www.postguard.eu/#decrypt">www.postguard.eu/#decrypt</a>.
+                        This website only decrypts the mail, and cannot be used for replying. PostGuard works better with its add-on than with this website.
                         </div>
                     </div>
                 </div>
@@ -420,5 +424,4 @@ This button can be found on the right side of the above menu.</p>
 
 </html>`
     }
-
 }
