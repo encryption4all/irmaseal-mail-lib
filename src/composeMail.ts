@@ -244,7 +244,7 @@ More information via: https://irma.app.`
         background-color: #ffffff;
         text-align: center;
       ">
-            <div style="text-align: left; background-color: #0b2879; height: 40px">
+            <div style="text-align: left; background-color: #20446b; height: 40px">
                 <svg style="margin-top: 3px; margin-left: 14px"
                     xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 0 38.27 44.64" fill="none">
                     <defs>
@@ -322,10 +322,8 @@ More information via: https://irma.app.`
                 (currently only) for Outlook and Thunderbird. It is available
                 via
                                 <a href="https://www.postguard.eu/#addons">www.postguard.eu</a>.
-                After installation, you can not only decrypt and read the
-                current email but also all future Postguarded emails. Moreover,
-                you can easily send secure emails yourself with the PostGuard
-                add-on.
+                After installation, you can not only decrypt and read this email but also all future emails encrypted with PostGuard. 
+                Moreover, you can easily send secure emails yourself with the PostGuard add-on.
                             </p>
                             <p>
                                 <span style="font-weight: 700; font-size: 14px">Already installed PostGuard? Click on the "Decrypt Email"
