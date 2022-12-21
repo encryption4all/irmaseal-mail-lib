@@ -1,6 +1,6 @@
 {
   "name": "@e4a/irmaseal-mail-utils",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "IRMAseal mail utils library providing functionality to read and compose IRMAseal MIME mails",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "build-linux": "rm -rf dist && mkdir dist && tsc",
     "build-win": "rmdir /s /q dist && mkdir dist && tsc",
     "test": "cd test && tsc composeAndReadMail.ts && tsc readExchangeMail.ts && node composeAndReadMail.js && node readExchangeMail.js",
-    "bundle": "npm run build && bundle-js dist/composeMail.js  -o dist/bundleMailUtils.js",
+    "bundle": "npm run build-win && bundle-js dist/composeMail.js  -o dist/bundleMailUtils.js",
     "format": "prettier --write ./src"
   },
   "dependencies": {},
