@@ -171,17 +171,17 @@ Moreover, you can easily send secure emails with the PostGuard addon within your
 What is PostGuard?
 
 PostGuard is a service for secure emailing. Only the intended recipient(s) can decrypt\r\nand read the emails sent with PostGuard. 
-The "Encryption for all"-team of the Radboud University has developed PostGuard.\r\nPostGuard uses the IRMA app for authentication. 
+The "Encryption for all"-team of the Radboud University has developed PostGuard.\r\nPostGuard uses the Yivi app for authentication. 
 More information via: https://www.postguard.eu.
 
-What is the IRMA app?
+What is the Yivi app?
 
-When you receive a PostGuarded email, you need to use the IRMA app to prove that you
+When you receive a PostGuarded email, you need to use the Yivi app to prove that you
 really are the intended recipient of the email.
-IRMA is a separate privacy-friendly authentication app
+Yivi is a separate privacy-friendly authentication app
 (which is used also for other authentication purposes).
-The free IMRA app can be downloaded via the App Store and Play Store.
-More information via: https://irma.app.`
+The free Yivi app can be downloaded via the App Store and Play Store.
+More information via: https://yivi.app.`
     }
 
     getPlainTextB64(): string {
@@ -421,50 +421,39 @@ More information via: https://irma.app.`
             width: 75%;
           ">
                     <div style="height: 22px; width: 20px; float: left; clear: none">
-                        <svg height="22px" viewBox="0 0 170 170" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
-                            xmlns:serif="http://www.serif.com/" style="
-                fill-rule: evenodd;
-                clip-rule: evenodd;
-                stroke-linejoin: round;
-                stroke-miterlimit: 1.41421;
-              ">
-                            <g transform="matrix(1,0,0,1,-0.588574,-0.544313)">
-                                <g id="Rounded_Rectangle_1_1_" transform="matrix(0.945114,-0.32674,0.32674,0.945114,-8.94903,58.0541)">
-                                    <g transform="matrix(0.945114,0.32674,-0.32674,0.945114,23.6518,-9.46055)">
-                                        <path d="M33.906,116.205C29.989,116.205 26.567,113.866 25.389,110.385L4.684,49.145C3.134,44.563 5.885,39.476 10.816,37.805L109.378,4.405C110.432,4.048 111.523,3.866 112.619,3.866C116.536,3.866 119.959,6.205 121.137,9.687L141.842,70.926C143.392,75.507 140.641,80.595 135.71,82.267L37.147,115.666C36.093,116.024 35.003,116.205 33.906,116.205L33.906,116.205Z" style="fill: #d44454; fill-rule: nonzero" />
-                                        <path d="M112.619,7.116C115.084,7.116 117.302,8.492 118.057,10.728L138.762,71.967C139.74,74.857 137.906,78.09 134.665,79.189L36.103,112.588C35.369,112.837 34.627,112.954 33.905,112.954C31.44,112.954 29.222,111.578 28.466,109.343L7.762,48.104C6.784,45.214 8.619,41.98 11.859,40.883L110.421,7.483C111.154,7.234 111.897,7.116 112.619,7.116M112.619,0.616C111.167,0.616 109.725,0.855 108.335,1.326L9.773,34.726C3.145,36.972 -0.519,43.907 1.605,50.186L22.31,111.424C23.935,116.227 28.595,119.453 33.907,119.453C35.359,119.453 36.801,119.215 38.192,118.743L136.753,85.344C143.381,83.097 147.045,76.161 144.921,69.883L124.214,8.646C122.59,3.843 117.93,0.616 112.619,0.616Z" style="fill: #d44454; fill-rule: nonzero" />
+                        <svg version="1.1" x="0px" y="0px" viewBox="0 0 765.35502 425.1971" enable-background="new 0 0 1190.55 841.89" xml:space="preserve" id="svg176" inkscape:version="1.2 (dc2aeda, 2022-05-15)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"><defs id="defs180"/>
+                            <g id="Laag_1" transform="translate(-212.686,-199.928)" style="display:inline">
+                                <g id="g149">
+                                    <polygon fill="#3ea6de" points="637.883,309.725 552.844,309.725 637.883,538.174 722.922,538.174 " id="polygon123"/>
+                                    <path fill="#e02146" d="m 802.842,245.254 c 0,-24.512 19.426,-45.326 47.639,-45.326 28.213,0 47.639,20.814 47.639,45.326 0,24.512 -19.426,45.789 -47.639,45.789 -28.213,0 -47.639,-21.277 -47.639,-45.789 z" id="path125"/>
+                                    <g id="g133">
+                                        <polygon fill="#97c6dd" points="893,309.727 893,538.174 893.002,538.174 978.041,309.725 893,309.725 " id="polygon127"/>
+                                        <polygon fill="#e02146" points="807.961,538.174 893,309.727 893,309.725 807.961,309.725 " id="polygon129"/>
+                                        <polygon fill="#6a2e4a" points="893,538.174 893,309.727 807.961,538.174 " id="polygon131"/>
                                     </g>
-                                    <g transform="matrix(0.945114,0.32674,-0.32674,0.945114,38.5375,-37.9081)">
-                                        <path d="M33.906,116.205C29.989,116.205 26.567,113.866 25.389,110.385L4.684,49.145C3.134,44.563 5.885,39.476 10.816,37.805L109.378,4.405C110.432,4.048 111.523,3.866 112.619,3.866C116.536,3.866 119.959,6.205 121.137,9.687L141.842,70.926C143.392,75.507 140.641,80.595 135.71,82.267L37.147,115.666C36.093,116.024 35.003,116.205 33.906,116.205L33.906,116.205Z" style="fill: #ffbb58; fill-rule: nonzero" />
-                                        <path d="M112.619,7.116C115.084,7.116 117.302,8.492 118.057,10.728L138.762,71.967C139.74,74.857 137.906,78.09 134.665,79.189L36.103,112.588C35.369,112.837 34.627,112.954 33.905,112.954C31.44,112.954 29.222,111.578 28.466,109.343L7.762,48.104C6.784,45.214 8.619,41.98 11.859,40.883L110.421,7.483C111.154,7.234 111.897,7.116 112.619,7.116M112.619,0.616C111.167,0.616 109.725,0.855 108.335,1.326L9.773,34.726C3.145,36.972 -0.519,43.907 1.605,50.186L22.31,111.424C23.935,116.227 28.595,119.453 33.907,119.453C35.359,119.453 36.801,119.215 38.192,118.743L136.753,85.344C143.381,83.097 147.045,76.161 144.921,69.883L124.214,8.646C122.59,3.843 117.93,0.616 112.619,0.616Z" style="fill: #ffbb58; fill-rule: nonzero" />
+                                    <g id="g141">
+                                        <polygon fill="#97c6dd" points="552.842,309.727 552.842,538.174 552.844,538.174 637.885,309.725 552.844,309.725 " id="polygon135"/>
+                                        <polygon fill="#e02146" points="467.803,309.725 467.803,538.174 467.805,538.174 552.842,309.727 552.842,309.725 " id="polygon137"/>
+                                        <polygon fill="#6a2e4a" points="552.842,538.174 552.842,309.727 467.805,538.174 " id="polygon139"/>
                                     </g>
-                                    <g transform="matrix(0.872113,0.489304,-0.489304,0.872113,33.7109,-39.4445)">
-                                        <path d="M33.906,116.205C29.989,116.205 26.567,113.866 25.389,110.385L4.684,49.145C3.134,44.563 5.885,39.476 10.816,37.805L109.378,4.405C110.432,4.048 111.523,3.866 112.619,3.866C116.536,3.866 119.959,6.205 121.137,9.687L141.842,70.926C143.392,75.507 140.641,80.595 135.71,82.267L37.147,115.666C36.093,116.024 35.003,116.205 33.906,116.205L33.906,116.205Z" style="fill: #2bc194; fill-rule: nonzero" />
-                                        <path d="M112.619,7.116C115.084,7.116 117.302,8.492 118.057,10.728L138.762,71.967C139.74,74.857 137.906,78.09 134.665,79.189L36.103,112.588C35.369,112.837 34.627,112.954 33.905,112.954C31.44,112.954 29.222,111.578 28.466,109.343L7.762,48.104C6.784,45.214 8.619,41.98 11.859,40.883L110.421,7.483C111.154,7.234 111.897,7.116 112.619,7.116M112.619,0.616C111.167,0.616 109.725,0.855 108.335,1.326L9.773,34.726C3.145,36.972 -0.519,43.907 1.605,50.186L22.31,111.424C23.935,116.227 28.595,119.453 33.907,119.453C35.359,119.453 36.801,119.215 38.192,118.743L136.753,85.344C143.381,83.097 147.045,76.161 144.921,69.883L124.214,8.646C122.59,3.843 117.93,0.616 112.619,0.616Z" style="fill: #2bc194; fill-rule: nonzero" />
-                                    </g>
-                                    <g transform="matrix(0.876971,0.480544,-0.480544,0.876971,56.23,-21.0767)">
-                                        <path d="M33.906,116.205C29.989,116.205 26.567,113.866 25.389,110.385L4.684,49.145C3.134,44.563 5.885,39.476 10.816,37.805L109.378,4.405C110.432,4.048 111.523,3.866 112.619,3.866C116.536,3.866 119.959,6.205 121.137,9.687L141.842,70.926C143.392,75.507 140.641,80.595 135.71,82.267L37.147,115.666C36.093,116.024 35.003,116.205 33.906,116.205L33.906,116.205Z" style="fill: #00b1e6; fill-rule: nonzero" />
-                                        <path d="M112.619,7.116C115.084,7.116 117.302,8.492 118.057,10.728L138.762,71.967C139.74,74.857 137.906,78.09 134.665,79.189L36.103,112.588C35.369,112.837 34.627,112.954 33.905,112.954C31.44,112.954 29.222,111.578 28.466,109.343L7.762,48.104C6.784,45.214 8.619,41.98 11.859,40.883L110.421,7.483C111.154,7.234 111.897,7.116 112.619,7.116M112.619,0.616C111.167,0.616 109.725,0.855 108.335,1.326L9.773,34.726C3.145,36.972 -0.519,43.907 1.605,50.186L22.31,111.424C23.935,116.227 28.595,119.453 33.907,119.453C35.359,119.453 36.801,119.215 38.192,118.743L136.753,85.344C143.381,83.097 147.045,76.161 144.921,69.883L124.214,8.646C122.59,3.843 117.93,0.616 112.619,0.616Z" style="fill: #00b1e6; fill-rule: nonzero" />
-                                    </g>
+                                    <path fill="#e02146" d="m 297.725,538.174 c -7.635,20.516 -18.471,25.9 -36.51,25.9 -11.562,0 -20.77,-1.85 -29.49,-4.625 l -1.441,61.051 c 11.947,3.238 27.178,4.625 40.59,4.625 59.201,0 87.168,-20.521 105.021,-68.488 l 6.871,-18.463 z" id="path143"/>
+                                    <polygon fill="#e02146" points="637.883,309.725 552.844,309.725 637.883,538.174 722.922,538.174 " id="polygon145"/>
+                                    <path fill="#e02146" d="m 462.686,245.254 c 0,-24.512 19.424,-45.326 47.637,-45.326 28.213,0 47.639,20.814 47.639,45.326 0,24.512 -19.426,45.789 -47.639,45.789 -28.213,0 -47.637,-21.277 -47.637,-45.789 z" id="path147"/>
                                 </g>
-                                <g id="Rounded_Rectangle_1_1_1" serif:id="Rounded_Rectangle_1_1_" transform="matrix(1,0,0,1,12.3739,26.4544)">
-                                    <g>
-                                        <path d="M33.906,116.205C29.989,116.205 26.567,113.866 25.389,110.385L4.684,49.145C3.134,44.563 5.885,39.476 10.816,37.805L109.378,4.405C110.432,4.048 111.523,3.866 112.619,3.866C116.536,3.866 119.959,6.205 121.137,9.687L141.842,70.926C143.392,75.507 140.641,80.595 135.71,82.267L37.147,115.666C36.093,116.024 35.003,116.205 33.906,116.205L33.906,116.205Z" style="fill: #004c92; fill-rule: nonzero" />
-                                        <path d="M112.619,7.116C115.084,7.116 117.302,8.492 118.057,10.728L138.762,71.967C139.74,74.857 137.906,78.09 134.665,79.189L36.103,112.588C35.369,112.837 34.627,112.954 33.905,112.954C31.44,112.954 29.222,111.578 28.466,109.343L7.762,48.104C6.784,45.214 8.619,41.98 11.859,40.883L110.421,7.483C111.154,7.234 111.897,7.116 112.619,7.116M112.619,0.616C111.167,0.616 109.725,0.855 108.335,1.326L9.773,34.726C3.145,36.972 -0.519,43.907 1.605,50.186L22.31,111.424C23.935,116.227 28.595,119.453 33.907,119.453C35.359,119.453 36.801,119.215 38.192,118.743L136.753,85.344C143.381,83.097 147.045,76.161 144.921,69.883L124.214,8.646C122.59,3.843 117.93,0.616 112.619,0.616Z" style="fill: #fff; fill-rule: nonzero" />
-                                    </g>
+                                <g id="g153">
+                                    <polygon fill="#6a2e4a" points="680.402,423.963 722.922,538.174 722.924,538.174 807.963,309.725 722.922,309.725 " id="polygon151"/>
                                 </g>
-                                <g id="IRMA_1_" transform="matrix(1,0,0,1,12.3739,26.4544)">
-                                    <clipPath id="_clip1">
-                                        <path d="M139.203,72.585L128.166,39.679L135.507,39.343L146.64,71.321L146.64,0L0,0L0,120.72L146.64,120.72L146.64,73.073L139.203,72.585Z" />
-                                    </clipPath>
-                                    <g clip-path="url(#_clip1)">
-                                        <rect x="42.199" y="40.296" width="6.083" height="32.149" style="fill: #fff; fill-rule: nonzero" />
-                                        <path d="M55.331,40.296L66.484,40.296C69.767,40.296 72.438,41.26 74.498,43.19C76.559,45.119 77.59,47.507 77.59,50.355C77.59,52.376 77.026,54.19 75.899,55.797C74.774,57.404 73.245,58.606 71.314,59.402L78.796,72.445L72.086,72.445L65.568,60.32L61.415,60.32L61.415,72.445L55.332,72.445L55.332,40.296L55.331,40.296ZM66.484,45.624L61.415,45.624L61.415,54.993L66.484,54.993C67.932,54.993 69.091,54.564 69.96,53.707C70.829,52.85 71.264,51.717 71.264,50.309C71.264,48.931 70.829,47.806 69.96,46.933C69.091,46.06 67.932,45.624 66.484,45.624Z" style="fill: #fff; fill-rule: nonzero" />
-                                        <path d="M101.017,63.91L96.001,63.893L89.512,52.478L89.512,72.444L83.429,72.444L83.429,40.296L88.836,40.296L98.491,57.426L108.196,40.296L113.555,40.296L113.555,72.445L107.472,72.445L107.472,52.513L101.017,63.91Z" style="fill: #fff; fill-rule: nonzero" />
-                                        <path d="M139.772,72.445L137.608,65.602L126.101,65.602L123.936,72.445L117.322,72.445L128.764,40.296L134.897,40.296L146.338,72.445L139.772,72.445ZM131.854,47.506L127.596,60.871L136.112,60.871L131.854,47.506Z" style="fill: #fff; fill-rule: nonzero" />
-                                    </g>
+                                <g id="g157">
+                                    <polygon fill="#6a2e4a" points="382.764,309.725 340.246,423.963 382.766,538.174 467.805,309.725 " id="polygon155" style="display:inline"/>
+                                </g>
+                                <polygon fill="#e02146" points="297.725,538.174 382.766,538.174 297.727,309.725 212.686,309.725 " id="polygon159" style="display:inline"/>
+                                <g id="g173" style="display:inline">
+                                    <polygon fill="#97c6dd" points="297.727,309.725 297.727,309.727 " id="polygon161"/>
+                                    <polygon fill="#e02146" points="212.686,309.727 212.686,309.725 " id="polygon163"/>
+                                    <polygon fill="#6a2e4a" points="255.205,423.967 297.727,309.727 297.727,309.725 212.686,309.725 212.686,309.727 " id="polygon165"/>
+                                    <polygon fill="#ba3353" points="595.363,423.967 637.883,309.727 637.883,309.725 552.844,309.725 552.844,309.727 " id="polygon167"/>
+                                    <polygon fill="#ba3353" points="680.402,423.967 637.883,538.176 637.883,538.178 722.924,538.178 722.924,538.176 " id="polygon169"/>
+                                    <polygon fill="#ba3353" points="340.246,423.967 297.725,538.176 297.725,538.178 382.766,538.178 382.766,538.176 " id="polygon171"/>
                                 </g>
                             </g>
                         </svg>
@@ -472,13 +461,13 @@ More information via: https://irma.app.`
 
                     <div style="margin-left: 34px">
                         <div style="font-weight: 700; font-size: 14px; line-height: 24px">
-              What is the IRMA app?
+              What is the Yivi app?
                         </div>
                         <div style="font-weight: 300; font-size: 12px; line-height: 20px">
-              The IRMA app is a general-purpose privacy-friendly authentication
-              app. You need the IRMA app with PostGuard to prove that you really
+              The Yivi app is a general-purpose privacy-friendly authentication
+              app. You need the Yivi app with PostGuard to prove that you really
               are the intended recipient.<br />
-                        <a href="https://irma.app">More information about IRMA</a>
+                        <a href="https://yivi.app">More information about Yivi</a>
                     </div>
                 </div>
             </div>
@@ -496,13 +485,13 @@ More information via: https://irma.app.`
               font-size: 14px;
               line-height: 24px;
             ">
-            Download the free IRMA app:
+            Download the free Yivi app:
                 </div>
 
-                <a href="https://apps.apple.com/us/app/irma-authentication/id1294092994" title="IRMA for iOS">App store</a
+                <a href="https://apps.apple.com/us/app/irma-authentication/id1294092994" title="Yivi for iOS">App store</a
           >
           &nbsp; &nbsp; &nbsp;
-                <a href="https://play.google.com/store/apps/details?id=org.irmacard.cardemu&gl=US" title="IRMA for Android">Google Play</a
+                <a href="https://play.google.com/store/apps/details?id=org.irmacard.cardemu&gl=US" title="Yivi for Android">Google Play</a
           >
             </div>
         </div>
